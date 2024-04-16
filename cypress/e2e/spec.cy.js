@@ -1,3 +1,109 @@
+describe('Отрицательные', () => { 
+  it('Вывод ошибки при вводе неверных данных в поле авторизации', () => {
+    cy.visit('https://dev.profteam.su/login');
+    cy.get('.form-input--text').type('1');
+    cy.get('.form-input--password').type('1');
+    cy.wait(500); 
+    cy.get('.form__buttons > :nth-child(3)').click();
+    cy.get('.form-error > span').should('be.visible');
+  });
+  it('Вывод ошибки при вводе неверных данных в поле авторизации через сетевой город ', () => {
+    cy.visit('https://dev.profteam.su/login');
+    cy.get('.button-login__network-city-desktop').click();
+    cy.get('.desktop-modal__content > .form > :nth-child(1) > .form__labels > :nth-child(1) > .form-control--medium > .form-input--text')
+.type('1');
+cy.get('.desktop-modal__content > .form > :nth-child(1) > .form__labels > :nth-child(2) > .form-control--medium > .form-input--password')
+.type('1');
+    cy.wait(500); 
+    cy.get('.desktop-modal__content > .form > .form__buttons > .login-form__button')
+.click();
+    cy.get('.form-error > span').should('be.visible');
+  });
+  it('Вывод ошибки при вводе неверных данных в поле логин при регистрации', () => {
+    cy.visit('https://dev.profteam.su/registration');
+    cy.get(':nth-child(1) > :nth-child(1) > .form-control--medium > .form-input--text').type('1');
+    cy.get(':nth-child(1) > .form-error > span').should('be.visible');
+  });
+  it('Вывод ошибки при вводе неверных данных в поле email при регистрации', () => {
+    cy.visit('https://dev.profteam.su/registration');
+    cy.get('.form-input--email').type('1');
+    cy.get(':nth-child(2) > .form-error > span').should('be.visible');
+  });
+  it('Вывод ошибки при вводе неверных данных в поле password при регистрации', () => {
+    cy.visit('https://dev.profteam.su/registration');
+    cy.get(':nth-child(3) > .form-control--medium > .form-input--password').type('1');
+    cy.get(':nth-child(4) > .form-control--medium > .form-input--password').type('1');
+    cy.get(':nth-child(3) > .form-error').should('be.visible');
+  });
+  it('Вывод ошибки при вводе несовпадающих паролей в поле password при регистрации', () => {
+    cy.visit('https://dev.profteam.su/registration');
+    cy.get(':nth-child(3) > .form-control--medium > .form-input--password').type('1');
+    cy.get(':nth-child(4) > .form-control--medium > .form-input--password').type('2');
+    cy.get(':nth-child(4) > .form-error > span').should('be.visible');
+    cy.wait(500); 
+  });
+  it('Вывод ошибки при вводе даты начала стажировки ранее сегодняшней даты', () => {
+    cy.wait(500); 
+    cy.visit('https://dev.profteam.su/login');
+    cy.get('.form-input--text').type('testerEmployer');
+    cy.get('.form-input--password').type('Password1');
+    cy.wait(500); 
+    cy.get('.form__buttons > :nth-child(3)').click();
+    cy.wait(2000); 
+    cy.visit('https://dev.profteam.su/account/internships');
+    cy.get('[data-v-b4b9d629=""][data-v-4849dea2=""] > .vacancies-block > .vacancies-block__filters-wrapper > .button').click();
+    cy.get('.vacancy-add-form-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(4) > .form-control--responsive > .form-input--date')
+.type('2022-12-12');
+cy.get(':nth-child(4) > .form-error > span').should('be.visible');
+  });
+  it('Вывод ошибки при вводе срока стажировки менее 1 дня или более полугода', () => {
+    cy.visit('https://dev.profteam.su/login#q');
+    cy.get('.form-input--text').type('testerEmployer');
+    cy.get('.form-input--password').type('Password1');
+    cy.wait(500); 
+    cy.get('.form__buttons > :nth-child(3)').click();
+    cy.wait(2000); 
+    cy.visit('https://dev.profteam.su/account/internships');
+    cy.get('[data-v-b4b9d629=""][data-v-4849dea2=""] > .vacancies-block > .vacancies-block__filters-wrapper > .button').click();
+    cy.get('.vacancy-add-form-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(4) > .form-control--responsive > .form-input--date')
+.type('2024-12-12');
+cy.get('.vacancy-add-form-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(5) > .form-control--responsive > .form-input--date')
+.type('2026-12-12');
+cy.wait(500); 
+cy.get(':nth-child(5) > .form-error > span').should('be.visible');
+  });
+
+it('Недопустимость изменения обязанностей в потребности в нулевое значение', () => {
+  cy.visit('https://dev.profteam.su/login#q');
+  cy.get('.form-input--text').type('testerEmployer');
+  cy.get('.form-input--password').type('Password1');
+  cy.wait(500);
+  cy.get('.form__buttons > :nth-child(3)').click();
+  cy.wait(2000);
+  cy.visit('https://dev.profteam.su/account/needs');
+  cy.wait(2000);
+  cy.get(':nth-child(1) > .need-item__info-wrapper > .need-item__footer-wrapper > .need-footer > .need-footer__button-wrapper > .button__background-color-gray').click();
+  cy.get('.desktop-modal__content > .vacancy-need-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(3) > .form-control > .form-area').type('{selectall}{backspace}');
+  cy.wait(500);
+  cy.get('.labels > :nth-child(3) > .form-error > span').should('be.visible');
+});
+
+it('Недопустимость изменения требований в потребности в нулевое значение', () => {
+  cy.visit('https://dev.profteam.su/login#q');
+  cy.get('.form-input--text').type('testerEmployer');
+  cy.get('.form-input--password').type('Password1');
+  cy.wait(500);
+  cy.get('.form__buttons > :nth-child(3)').click();
+  cy.wait(2000);
+  cy.visit('https://dev.profteam.su/account/needs');
+  cy.wait(2000);
+  cy.get(':nth-child(1) > .need-item__info-wrapper > .need-item__footer-wrapper > .need-footer > .need-footer__button-wrapper > .button__background-color-gray').click();
+  cy.get('.desktop-modal__content > .vacancy-need-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(4) > .form-control > .form-area')
+.type('{selectall}{backspace}');
+  cy.wait(500);
+  cy.get(':nth-child(4) > .form-error > span').should('be.visible');
+});
+});
 describe('template spec', () => { 
  
   it('Переход на страницу по ссылке', () => {
@@ -150,114 +256,6 @@ it('Проверка Создания вакансии', () => {
     cy.get('.vacancy-add-form-wrapper > .form > .form__buttons > .buttons > .button').click();
     cy.get(':nth-child(1) > .vacancy-item__info-wrapper > .vacancy-header > .vacancy-header__title-wrapper > .card-info > .breadcrumb > li > .card-info__company').should('be.visible');
 })
-    });
-    describe('Отрицательные', () => { 
-      it('Вывод ошибки при вводе неверных данных в поле авторизации', () => {
-        cy.visit('https://dev.profteam.su/login');
-        cy.get('.form-input--text').type('1');
-        cy.get('.form-input--password').type('1');
-        cy.wait(500); 
-        cy.get('.form__buttons > :nth-child(3)').click();
-        cy.get('.form-error > span').should('be.visible');
-      });
-      it('Вывод ошибки при вводе неверных данных в поле авторизации через сетевой город ', () => {
-        cy.visit('https://dev.profteam.su/login');
-        cy.get('.button-login__network-city-desktop').click();
-        cy.get('.desktop-modal__content > .form > :nth-child(1) > .form__labels > :nth-child(1) > .form-control--medium > .form-input--text')
-    .type('1');
-    cy.get('.desktop-modal__content > .form > :nth-child(1) > .form__labels > :nth-child(2) > .form-control--medium > .form-input--password')
-    .type('1');
-        cy.wait(500); 
-        cy.get('.desktop-modal__content > .form > .form__buttons > .login-form__button')
-    .click();
-        cy.get('.form-error > span').should('be.visible');
-      });
-      it('Вывод ошибки при вводе неверных данных в поле логин при регистрации', () => {
-        cy.visit('https://dev.profteam.su/registration');
-        cy.get(':nth-child(1) > :nth-child(1) > .form-control--medium > .form-input--text').type('1');
-        cy.get(':nth-child(1) > .form-error > span').should('be.visible');
-      });
-      it('Вывод ошибки при вводе неверных данных в поле email при регистрации', () => {
-        cy.visit('https://dev.profteam.su/registration');
-        cy.get('.form-input--email').type('1');
-        cy.get(':nth-child(2) > .form-error > span').should('be.visible');
-      });
-      it('Вывод ошибки при вводе неверных данных в поле password при регистрации', () => {
-        cy.visit('https://dev.profteam.su/registration');
-        cy.get(':nth-child(3) > .form-control--medium > .form-input--password').type('1');
-        cy.get(':nth-child(4) > .form-control--medium > .form-input--password').type('1');
-        cy.get(':nth-child(3) > .form-error').should('be.visible');
-      });
-      it('Вывод ошибки при вводе несовпадающих паролей в поле password при регистрации', () => {
-        cy.visit('https://dev.profteam.su/registration');
-        cy.get(':nth-child(3) > .form-control--medium > .form-input--password').type('1');
-        cy.get(':nth-child(4) > .form-control--medium > .form-input--password').type('2');
-        cy.get(':nth-child(4) > .form-error > span').should('be.visible');
-        cy.wait(500); 
-      });
-      it('Вывод ошибки при вводе даты начала стажировки ранее сегодняшней даты', () => {
-        cy.wait(500); 
-        cy.visit('https://dev.profteam.su/login');
-        cy.get('.form-input--text').type('testerEmployer');
-        cy.get('.form-input--password').type('Password1');
-        cy.wait(500); 
-        cy.get('.form__buttons > :nth-child(3)').click();
-        cy.wait(2000); 
-        cy.visit('https://dev.profteam.su/account/internships');
-        cy.get('[data-v-b4b9d629=""][data-v-4849dea2=""] > .vacancies-block > .vacancies-block__filters-wrapper > .button').click();
-        cy.get('.vacancy-add-form-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(4) > .form-control--responsive > .form-input--date')
-    .type('2022-12-12');
-    cy.get(':nth-child(4) > .form-error > span').should('be.visible');
-      });
-      it('Вывод ошибки при вводе срока стажировки менее 1 дня или более полугода', () => {
-        cy.visit('https://dev.profteam.su/login#q');
-        cy.get('.form-input--text').type('testerEmployer');
-        cy.get('.form-input--password').type('Password1');
-        cy.wait(500); 
-        cy.get('.form__buttons > :nth-child(3)').click();
-        cy.wait(2000); 
-        cy.visit('https://dev.profteam.su/account/internships');
-        cy.get('[data-v-b4b9d629=""][data-v-4849dea2=""] > .vacancies-block > .vacancies-block__filters-wrapper > .button').click();
-        cy.get('.vacancy-add-form-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(4) > .form-control--responsive > .form-input--date')
-    .type('2024-12-12');
-    cy.get('.vacancy-add-form-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(5) > .form-control--responsive > .form-input--date')
-    .type('2026-12-12');
-    cy.wait(500); 
-    cy.get(':nth-child(5) > .form-error > span').should('be.visible');
-      });
-  
-    it('Недопустимость изменения обязанностей в потребности в нулевое значение', () => {
-      cy.visit('https://dev.profteam.su/login#q');
-      cy.get('.form-input--text').type('testerEmployer');
-      cy.get('.form-input--password').type('Password1');
-      cy.wait(500);
-      cy.get('.form__buttons > :nth-child(3)').click();
-      cy.wait(2000);
-      cy.visit('https://dev.profteam.su/account/needs');
-      cy.wait(2000);
-      cy.get(':nth-child(1) > .need-item__info-wrapper > .need-item__footer-wrapper > .need-footer > .need-footer__button-wrapper > .button__background-color-gray').click();
-      cy.get('.desktop-modal__content > .vacancy-need-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(3) > .form-control > .form-area').type('{selectall}{backspace}');
-      cy.wait(500);
-      cy.get('.labels > :nth-child(3) > .form-error > span').should('be.visible');
-    });
-  
-    it('Недопустимость изменения требований в потребности в нулевое значение', () => {
-      cy.visit('https://dev.profteam.su/login#q');
-      cy.get('.form-input--text').type('testerEmployer');
-      cy.get('.form-input--password').type('Password1');
-      cy.wait(500);
-      cy.get('.form__buttons > :nth-child(3)').click();
-      cy.wait(2000);
-      cy.visit('https://dev.profteam.su/account/needs');
-      cy.wait(2000);
-      cy.get(':nth-child(1) > .need-item__info-wrapper > .need-item__footer-wrapper > .need-footer > .need-footer__button-wrapper > .button__background-color-gray').click();
-      cy.get('.desktop-modal__content > .vacancy-need-wrapper > .form > :nth-child(1) > .form__labels > .labels > :nth-child(4) > .form-control > .form-area')
-  .type('{selectall}{backspace}');
-      cy.wait(500);
-      cy.get(':nth-child(4) > .form-error > span').should('be.visible');
-    });
-  
-
     });
 
     
