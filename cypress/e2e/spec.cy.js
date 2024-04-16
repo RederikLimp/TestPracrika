@@ -133,8 +133,8 @@ describe('template spec', () => {
   it('Проверка процесса регистрации', () => {
     cy.visit('https://dev.profteam.su/registration');
 
-    cy.get(':nth-child(1) > :nth-child(1) > .form-control--medium > .form-input--text').type('newffgfgfUser');
-    cy.get('.form-input--email').type('newusffgfgdfer@example.com');
+    cy.get(':nth-child(1) > :nth-child(1) > .form-control--medium > .form-input--text').type('newffgdfggfgfUser');
+    cy.get('.form-input--email').type('newusffgfgdfedgfdfgr@example.com');
     cy.get(':nth-child(3) > .form-control--medium > .form-input--password').type('Password12А3');
     cy.get(':nth-child(4) > .form-control--medium > .form-input--password').type('Password12А3');
 
